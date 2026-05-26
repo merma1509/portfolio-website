@@ -5,5 +5,7 @@
   },
   "env": {
     "NODE_OPTIONS": "--openssl-legacy-provider"
-  }
+  },
+  "framework": "nextjs",
+  "nodeVersion": "18.x"
 }

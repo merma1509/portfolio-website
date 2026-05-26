@@ -13,7 +13,7 @@ export default function Home() {
     errorMessage: 'Error subscribing. Please try again.'
   });
 
-  const handleNewsletterSubmit = async (e: React.SubmitEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await submitForm(newsletterData);
     if (result.success) {

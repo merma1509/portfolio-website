@@ -56,7 +56,7 @@ export default function Projects() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInquirySubmit = async (e: React.SubmitEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateInquiryForm()) {
@@ -217,7 +217,7 @@ export default function Projects() {
               </p>
             </div>
 
-        <form onSubmit={handleInquirySubmit} className="max-w-2xl mx-auto">
+        <form onSubmit={handleNewsletterSubmit} className="max-w-2xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Project</label>

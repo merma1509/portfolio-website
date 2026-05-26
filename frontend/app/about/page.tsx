@@ -1,6 +1,5 @@
 'use client';
 
-import { div } from 'framer-motion/client';
 import Layout from '../../components/Layout';
 
 export default function About() {
