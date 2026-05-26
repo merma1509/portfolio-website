@@ -1,42 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { countries } from '@/lib/countries';
+import Layout from '../../components/Layout';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 export default function Projects() {
   const [inquiryData, setInquiryData] = useState({ project_name: '', email: '', inquiry: '', phone: '', occupation: '', country: { code: '+250', flag: '🇷🇼', name: 'Rwanda' }});
-  const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
-  const [inquiryErrors, setInquiryErrors] = useState<{[key: string]: string}>({});
-  const [theme, setTheme] = useState('light');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const [selectedInquiryCountry, setSelectedInquiryCountry] = useState({ code: '+250', flag: '🇷🇼', name: 'Rwanda' });
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
+  const { submitForm: submitInquiry, isSubmitting: isSubmittingInquiry, errors: inquiryErrors } = useFormSubmit({
+    endpoint: '/contact',
+    successMessage: 'Project inquiry submitted successfully! We\'ll get back to you soon.',
+    errorMessage: 'Error submitting inquiry. Please try again.'
+  });
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
+  
   const validateInquiryForm = () => {
     const newErrors: {[key: string]: string} = {};
 
@@ -74,11 +53,10 @@ export default function Projects() {
       newErrors.inquiry = 'Inquiry must be less than 500 characters';
     }
 
-    setInquiryErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInquirySubmit = async (e: React.FormEvent) => {
+  const handleInquirySubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
 
     if (!validateInquiryForm()) {
@@ -101,8 +79,7 @@ export default function Projects() {
       if (response.ok) {
         alert('Inquiry sent successfully!');
         setInquiryData({ project_name: '', email: '', inquiry: '', phone: '', occupation: '', country: { code: '+7', flag: '🇷🇺', name: 'Russia' } });
-        setInquiryErrors({});
-      } else {
+              } else {
         alert('Error sending inquiry. Please try again.');
       }
     } catch (error) {
@@ -147,8 +124,8 @@ export default function Projects() {
       border: "border-teal-200 dark:border-teal-700",
       button: "bg-teal-600 hover:bg-teal-700",
       link: "#"
-    },
-    {
+    }
+   /*, {
       name: "Drone and UAVs",
       slogan: "Hardware Meets Software for Autonomous Innovation.",
       description: "A long-term initiative to develop autonomous drones for delivery, disaster response, traffic intelligence, and environmental monitoring. Integrating hardware design with software for navigation, cybersecurity for secure operations, and AI for intelligent decision-making in logistics and agriculture.",
@@ -160,73 +137,13 @@ export default function Projects() {
       button: "bg-indigo-600 hover:bg-indigo-700",
       link: "#"
     }
-  ];
+  */
+ ];
 
   return (
-    <>
-      {/* Header/Navigation - Mobile First */}
-      <header className="sticky top-0 z-50 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700 p-3 sm:p-4">
-        <nav className="max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
-            <a href="/" className="hover:opacity-80 transition-opacity">~M</a>
-          </h1>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex space-x-3 xl:space-x-6">
-            <a href="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Home</a>
-            <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">About</a>
-            <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white font-semibold transition-colors px-2 py-2 text-sm xl:text-base">Projects</a>
-            <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Skills</a>
-            <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Gallery</a>
-            <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Contact</a>
-            <button
-              onClick={toggleTheme}
-              className="ml-3 p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 hover:scale-110"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-          </div>
-
-          {/* Mobile Menu Controls */}
-          <div className="lg:hidden flex items-center space-x-2">
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-            <button
-              onClick={toggleMobileMenu}
-              className={`p-2 sm:p-3 bg-slate-200 dark:bg-slate-700 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 ${isMobileMenuOpen ? 'bg-slate-300 dark:bg-slate-600 scale-105' : ''}`}
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-2 sm:mt-3 pb-3 sm:pb-4 border-t border-slate-200 dark:border-slate-700 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg">
-            <div className="flex flex-col space-y-1 pt-2 sm:pt-3">
-              <a href="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Home</a>
-              <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white font-semibold transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-              <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
-              <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Gallery</a>
-              <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-6 sm:py-8 lg:py-16 relative overflow-hidden">
-        {/* Decorative background elements */}
+    <Layout currentPage="projects" className="relative overflow-hidden">
+      <div className="py-6 sm:py-8 lg:py-16 relative z-10">
+          {/* Decorative background elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-purple-400/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
@@ -239,198 +156,144 @@ export default function Projects() {
               Projects
             </span>
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 mb-8 sm:mb-12 lg:mb-16 text-center max-w-4xl mx-auto px-2 animate-fade-in-up delay-200">
-            Innovative solutions bridging technology and real-world challenges. Each project is designed to create impact, from saving lives to optimizing cities—built with passion and precision.
+
+          {/* Projects Description */}
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed px-2 animate-fade-in-up delay-200">
+            Explore my portfolio of innovative projects spanning AI, IoT, autonomous systems, and sustainable technology solutions.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 animate-fade-in-up delay-400">
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mt-12 sm:mt-16 lg:mt-20">
             {projects.map((project, index) => (
               <div 
                 key={index} 
-                className={`group bg-gradient-to-br ${project.color} p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 border ${project.border} hover:scale-105 relative overflow-hidden cursor-pointer`}
-                onClick={() => project.onClick ? project.onClick() : window.open(project.link || '#', '_blank')}
+                className="group relative bg-gradient-to-br from-white/80 to-white/60 dark:from-slate-800/80 dark:to-slate-800/60 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-slate-200/50 dark:border-slate-700/50 hover:scale-[1.02] overflow-hidden"
               >
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-lg animate-pulse"></div>
-
-                <div className="flex items-center mb-2 sm:mb-3 relative z-10">
-                  <div className={`w-12 h-12 sm:w-16 sm:h-16 ${project.button.replace('bg-', 'bg-').replace('hover:bg-', '')} rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-lg group-hover:scale-110 transition-transform`}>
-                    <span className="text-white text-lg sm:text-2xl animate-bounce-subtle">{project.icon}</span>
+                <div className={`absolute -right-10 -top-10 w-40 h-40 ${project.color} rounded-full filter blur-2xl -z-10 group-hover:scale-150 transition-transform duration-700`}></div>
+                <div className="relative z-10">
+                  <div className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${project.button} rounded-2xl flex items-center justify-center mb-6 shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <span className="text-white text-2xl sm:text-3xl">{project.icon}</span>
                   </div>
-                  <div className="relative z-10 flex-1 text-center">
-                    <h2 className="text-slate-800 dark:text-white mb-1 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors text-lg sm:text-xl font-bold text-center">{project.name}</h2>
-                    <p className="text-slate-600 dark:text-slate-300 font-medium italic text-sm">"{project.slogan}"</p>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 leading-relaxed text-justify text-sm sm:text-base relative z-10">{project.description}</p>
-
-                <div className="mb-4 sm:mb-6 relative z-10">
-                  <h3 className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-2 sm:mb-3">Tech Stack</h3>
-                  <div className="flex flex-wrap gap-1 sm:gap-2">
-                    {project.tech.map((tech, i) => (
-                      <span key={i} className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-xs font-medium ${project.button} text-white shadow-sm hover:shadow-md transition-shadow`}>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {project.name}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm sm:text-base leading-relaxed">
+                    {project.slogan}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.tech.map((tech: string, techIndex: number) => (
+                      <span 
+                        key={techIndex}
+                        className={`px-3 py-1 ${project.border} ${project.color} text-xs sm:text-sm font-medium rounded-full`}
+                      >
                         {tech}
                       </span>
                     ))}
                   </div>
+                  <a 
+                    href={project.link}
+                    className={`inline-flex items-center ${project.button} text-white px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}
+                  >
+                    <span className="mr-2">View Details</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
                 </div>
-
-                <div className="mb-4 sm:mb-6 relative z-10">
-                  <h3 className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-2 sm:mb-3">Key Outcomes</h3>
-                  <p className="text-slate-600 dark:text-slate-300 text-justify text-sm sm:text-base">{project.outcomes}</p>
-                </div>
-
-                <a href={project.link} className={`inline-block ${project.button} text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 relative z-10`}>
-                  View Details
-                </a>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 sm:mt-16 lg:mt-20 animate-fade-in-up delay-800">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800 dark:text-white mb-6 sm:mb-8 text-center animate-slide-in-left">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Project Inquiries
-              </span>
-            </h2>
-            <form onSubmit={handleInquirySubmit} className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm p-6 sm:p-8 lg:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto border border-slate-200/40 dark:border-slate-700/40 relative overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-pulse"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-br from-pink-400/20 to-indigo-400/20 rounded-full blur-xl animate-pulse delay-500"></div>
+          {/* Project Inquiry Form */}
+          <div className="mt-16 sm:mt-20">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 dark:text-white mb-4">
+                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Interested in a Project?
+                </span>
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+                Have questions about any of these projects or want to discuss a collaboration? Let's talk!
+              </p>
+            </div>
 
-              <div className="relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                  <div className="animate-fade-in-up delay-200">
-                    <label htmlFor="project_name" className="block text-slate-700 dark:text-slate-300 mb-3 font-semibold text-sm sm:text-base">
-                      Project *
-                    </label>
-                    <select
-                      id="project_name"
-                      value={inquiryData.project_name}
-                      onChange={(e) => setInquiryData({ ...inquiryData, project_name: e.target.value })}
-                      className={`w-full p-4 sm:p-5 border-2 rounded-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-600 ${inquiryErrors.project_name ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} text-sm sm:text-base shadow-sm hover:shadow-md`}
-                      required
-                    >
-                      <option value="">Select Project</option>
-                      <option value="OpenClimate">OpenClimate</option>
-                      <option value="RoutiQ">RoutiQ</option>
-                      <option value="eNeza MarketPlace">eNeza MarketPlace</option>
-                      <option value="Drone and UAVs">Drone and UAVs</option>
-                      <option value="Others">Others</option>
-                    </select>
-                    {inquiryErrors.project_name && <p className="mt-2 text-sm text-red-600 dark:text-red-400 animate-shake">{inquiryErrors.project_name}</p>}
-                  </div>
-
-                  <div className="animate-fade-in-up delay-300">
-                    <label htmlFor="email" className="block text-slate-700 dark:text-slate-300 mb-3 font-semibold text-sm sm:text-base">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={inquiryData.email}
-                      onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
-                      className={`w-full p-4 sm:p-5 border-2 rounded-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-600 ${inquiryErrors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} text-sm sm:text-base shadow-sm hover:shadow-md`}
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                    {inquiryErrors.email && <p className="mt-2 text-sm text-red-600 dark:text-red-400 animate-shake">{inquiryErrors.email}</p>}
-                  </div>
-
-                  <div className="animate-fade-in-up delay-500">
-                    <label htmlFor="phone" className="block text-slate-700 dark:text-slate-300 mb-3 font-semibold text-sm sm:text-base">
-                      Phone Number
-                    </label>
-                    <div className="flex">
-                      <select
-                        value={selectedInquiryCountry.code}
-                        onChange={(e) => {
-                          const country = countries.find(c => c.code === e.target.value);
-                          if (country) setSelectedInquiryCountry(country);
-                        }}
-                        className="flex-shrink-0 p-4 sm:p-5 border-2 border-r-0 border-slate-300 dark:border-slate-600 rounded-l-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm sm:text-base"
-                      >
-                        {countries.map((country) => (
-                          <option key={country.code} value={country.code}>
-                            {country.flag} {country.code}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="tel"
-                        id="phone"
-                        value={inquiryData.phone}
-                        onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
-                        className={`flex-1 p-4 sm:p-5 border-2 border-l-0 rounded-r-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-600 ${inquiryErrors.phone ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} text-sm sm:text-base shadow-sm hover:shadow-md`}
-                        placeholder="700 000 000"
-                      />
-                    </div>
-                    {inquiryErrors.phone && <p className="mt-2 text-sm text-red-600 dark:text-red-400 animate-shake">{inquiryErrors.phone}</p>}
-                  </div>
-
-                  <div className="animate-fade-in-up delay-600">
-                    <label htmlFor="occupation" className="block text-slate-700 dark:text-slate-300 mb-3 font-semibold text-sm sm:text-base">
-                      Occupation *
-                    </label>
-                    <select
-                      id="occupation"
-                      value={inquiryData.occupation}
-                      onChange={(e) => setInquiryData({ ...inquiryData, occupation: e.target.value })}
-                      className={`w-full p-4 sm:p-5 border-2 rounded-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-600 ${inquiryErrors.occupation ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} text-sm sm:text-base shadow-sm hover:shadow-md`}
-                      required
-                    >
-                      <option value="">Select Occupation</option>
-                      <option value="investor">Investor</option>
-                      <option value="looking for a job">Looking for a Job</option>
-                      <option value="team member">Team Member</option>
-                      <option value="collaborator">Collaborator</option>
-                      <option value="client">Client</option>
-                      <option value="other">Other</option>
-                    </select>
-                    {inquiryErrors.occupation && <p className="mt-2 text-sm text-red-600 dark:text-red-400 animate-shake">{inquiryErrors.occupation}</p>}
-                  </div>
-
-                  <div className="md:col-span-2 animate-fade-in-up delay-700">
-                    <label htmlFor="inquiry" className="block text-slate-700 dark:text-slate-300 mb-3 font-semibold text-sm sm:text-base">
-                      Project Inquiry *
-                    </label>
-                    <textarea
-                      id="inquiry"
-                      value={inquiryData.inquiry}
-                      onChange={(e) => setInquiryData({ ...inquiryData, inquiry: e.target.value })}
-                      className={`w-full p-4 sm:p-5 border-2 rounded-xl bg-slate-50/80 dark:bg-slate-700/80 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-600 ${inquiryErrors.inquiry ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} text-sm sm:text-base shadow-sm hover:shadow-md`}
-                      rows={5}
-                      placeholder="Tell us about project interest, collaboration ideas, or specific questions..."
-                      required
-                    />
-                    {inquiryErrors.inquiry && <p className="mt-2 text-sm text-red-600 dark:text-red-400 animate-shake">{inquiryErrors.inquiry}</p>}
-                    <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                      {inquiryData.inquiry.trim().split(/\s+/).filter(word => word.length > 0).length}/15 words minimum
-                    </p>
-                  </div>
-                </div>
-
-                <div className="text-center mt-8 sm:mt-10 animate-fade-in-up delay-800">
-                  <button
-                    type="submit"
-                    disabled={isSubmittingInquiry}
-                    className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl transition-all duration-500 font-bold text-base sm:text-lg shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 hover:-translate-y-1 min-h-[56px] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+        <form onSubmit={handleInquirySubmit} className="max-w-2xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Project</label>
+                  <select
+                    value={inquiryData.project_name}
+                    onChange={(e) => setInquiryData({ ...inquiryData, project_name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    required
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                    <span className="relative z-10 mr-2 text-xl animate-bounce-subtle">
-                      {isSubmittingInquiry ? '⏳' : '🚀'}
-                    </span>
-                    <span className="relative z-10">
-                      {isSubmittingInquiry ? 'Sending...' : 'Send Inquiry'}
-                    </span>
-                  </button>
+                    <option value="">Select a project</option>
+                    {projects.map((project, index) => (
+                      <option key={index} value={project.name}>{project.name}</option>
+                    ))}
+                  </select>
+                  {inquiryErrors.project_name && <p className="text-red-500 text-sm mt-1">{inquiryErrors.project_name}</p>}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={inquiryData.email}
+                    onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    placeholder="your@email.com"
+                    required
+                  />
+                  {inquiryErrors.email && <p className="text-red-500 text-sm mt-1">{inquiryErrors.email}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Phone</label>
+                  <input
+                    type="tel"
+                    value={inquiryData.phone}
+                    onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    placeholder="+1234567890"
+                    required
+                  />
+                  {inquiryErrors.phone && <p className="text-red-500 text-sm mt-1">{inquiryErrors.phone}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Occupation</label>
+                  <input
+                    type="text"
+                    value={inquiryData.occupation}
+                    onChange={(e) => setInquiryData({ ...inquiryData, occupation: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    placeholder="Your role"
+                  />
+                </div>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Inquiry Details</label>
+                <textarea
+                  value={inquiryData.inquiry}
+                  onChange={(e) => setInquiryData({ ...inquiryData, inquiry: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
+                  rows={6}
+                  placeholder="Tell us about your interest in this project..."
+                  required
+                />
+                {inquiryErrors.inquiry && <p className="text-red-500 text-sm mt-1">{inquiryErrors.inquiry}</p>}
+              </div>
+              <div className="mt-8 text-center">
+                <button
+                  type="submit"
+                  disabled={isSubmittingInquiry}
+                  className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white px-8 py-3 rounded-lg transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmittingInquiry ? 'Sending...' : 'Send Inquiry'}
+                </button>
               </div>
             </form>
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
