@@ -1,118 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Layout from '../components/Layout';
+import { useFormSubmit } from '../hooks/useFormSubmit';
 
 export default function Home() {
-  const [theme, setTheme] = useState('light');
   const [newsletterData, setNewsletterData] = useState({ name: '', email: '' });
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const { submitForm, isSubmitting } = useFormSubmit({
+    endpoint: '/newsletter',
+    successMessage: 'Subscribed successfully!',
+    errorMessage: 'Error subscribing. Please try again.'
+  });
 
   const handleNewsletterSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newsletterData),
-      });
-      if (response.ok) {
-        alert('Subscribed successfully!');
-        setNewsletterData({ name: '', email: '' });
-      } else {
-        alert('Error subscribing. Please try again.');
-      }
-    } catch (error) {
-      alert('Error subscribing. Please try again.');
+    const result = await submitForm(newsletterData);
+    if (result.success) {
+      setNewsletterData({ name: '', email: '' });
     }
-  };
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      {/* Header/Navigation - Mobile First */}
-      <header className="sticky top-0 z-50 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700 p-3 sm:p-4">
-        <nav className="max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
-            <a href="/" className="hover:opacity-80 transition-opacity">~M</a>
-          </h1>
-
-          {/* Desktop Navigation - Hidden on mobile/tablet */}
-          <div className="hidden xl:flex space-x-4 2xl:space-x-6">
-            <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-3 py-2 text-sm 2xl:text-base">About</a>
-            <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-3 py-2 text-sm 2xl:text-base">Projects</a>
-            <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-3 py-2 text-sm 2xl:text-base">Skills</a>
-            <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-3 py-2 text-sm 2xl:text-base">Gallery</a>
-            <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-3 py-2 text-sm 2xl:text-base">Contact</a>
-            <button
-              onClick={toggleTheme}
-              className="ml-4 p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 hover:scale-110"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-          </div>
-
-          {/* Mobile/Tablet Menu Controls - Always Visible on smaller screens */}
-          <div className="xl:hidden flex items-center space-x-1 sm:space-x-2">
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-            <button
-              onClick={toggleMobileMenu}
-              className={`p-2 sm:p-3 bg-slate-200 dark:bg-slate-700 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 ${isMobileMenuOpen ? 'bg-slate-300 dark:bg-slate-600 scale-105' : ''}`}
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </nav>
-
-        {/* Enhanced Mobile/Tablet Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="xl:hidden mt-2 sm:mt-3 pb-3 sm:pb-4 border-t border-slate-200 dark:border-slate-700 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg">
-            <div className="flex flex-col space-y-1 pt-2 sm:pt-3">
-              <a href="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Home</a>
-              <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-              <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
-              <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Gallery</a>
-              <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-            </div>
-          </div>
-        )}
-      </header>
-
+    <Layout currentPage="home">
       {/* Hero Section - Original Layout */}
       <main className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-16">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12 items-center">
@@ -248,16 +158,17 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl transition-all duration-500 font-bold sm:ml-4 mt-4 sm:mt-0 min-h-[56px] flex items-center justify-center text-base sm:text-lg shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 hover:-translate-y-1 animate-pulse hover:animate-none"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl transition-all duration-500 font-bold sm:ml-4 mt-4 sm:mt-0 min-h-[56px] flex items-center justify-center text-base sm:text-lg shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 hover:-translate-y-1 animate-pulse hover:animate-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="mr-3 text-xl">🚀</span>
-                  Subscribe
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
             </div>
           </div>
         </div>
       </footer>
-    </div>
+    </Layout>
   );
 }

@@ -1,35 +1,9 @@
 'use client';
 
-import { useState, useLayoutEffect } from 'react';
+import { div } from 'framer-motion/client';
+import Layout from '../../components/Layout';
 
 export default function About() {
-  const [theme, setTheme] = useState('light');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useLayoutEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
 
   const education = [
     {
@@ -68,7 +42,7 @@ export default function About() {
   ];
 
   return (
-    <>
+    <Layout currentPage="about" className="relative overflow-hidden">
       {/* Animated Background Particles */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -92,68 +66,7 @@ export default function About() {
       <div className="fixed top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-500/5 to-transparent rounded-full filter blur-3xl -z-10"></div>
       <div className="fixed bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-purple-500/5 to-transparent rounded-full filter blur-3xl -z-10"></div>
 
-      {/* Header/Navigation - Mobile First */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50 p-3 sm:p-4 shadow-sm">
-        <nav className="max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
-            <a href="/" className="hover:opacity-80 transition-opacity">~M</a>
-          </h1>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex space-x-3 xl:space-x-6">
-            <a href="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Home</a>
-            <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white font-semibold transition-colors px-2 py-2 text-sm xl:text-base">About</a>
-            <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Projects</a>
-            <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Skills</a>
-            <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Gallery</a>
-            <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors px-2 py-2 text-sm xl:text-base">Contact</a>
-            <button
-              onClick={toggleTheme}
-              className="ml-3 p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 hover:scale-110"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-          </div>
-
-          {/* Mobile Menu Controls */}
-          <div className="lg:hidden flex items-center space-x-2">
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-2 bg-slate-200 dark:bg-slate-700 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-            <button
-              onClick={toggleMobileMenu}
-              className={`p-2 sm:p-3 bg-slate-200 dark:bg-slate-700 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 ${isMobileMenuOpen ? 'bg-slate-300 dark:bg-slate-600 scale-105' : ''}`}
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-2 sm:mt-3 pb-3 sm:pb-4 border-t border-slate-200 dark:border-slate-700 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg">
-            <div className="flex flex-col space-y-1 pt-2 sm:pt-3">
-              <a href="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Home</a>
-              <a href="/about" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white font-semibold transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="/projects" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-              <a href="/skills" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
-              <a href="/gallery" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Gallery</a>
-              <a href="/contact" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-colors py-2 sm:py-3 px-3 sm:px-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg mx-1 sm:mx-2 text-sm sm:text-base" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-6 sm:py-8 lg:py-16 relative overflow-hidden">
+      <div className="py-6 sm:py-8 lg:py-16 relative z-10">
         {/* Decorative background elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse"></div>
@@ -187,7 +100,7 @@ export default function About() {
                 </h2>
                 <div className="space-y-4">
                   <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed hover:text-slate-700 dark:hover:text-slate-300 transition-colors text-justify">
-                    I'm a passionate tech professional with a strong interest in artificial intelligence, IoT, and space technologies. My journey in technology has been driven by curiosity and a desire to create meaningful solutions to real-world problems.
+                    I'm a passionate tech professional with a strong interest in artificial intelligence, and Internet of Things. My journey in technology has been driven by curiosity and a desire to create meaningful solutions to real-world problems.
                   </p>
                   <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed hover:text-slate-700 dark:hover:text-slate-300 transition-colors text-justify">
                     With experience in both technical and entrepreneurial domains, I enjoy working at the intersection of technology and business to create impactful solutions. I'm particularly interested in how emerging technologies can be leveraged to address global challenges.
@@ -209,7 +122,7 @@ export default function About() {
                   {[
                     "Artificial Intelligence: Building predictive models and data pipelines for various applications.",
                     "Internet of Things/ Cyber Physical Systems: Designing embedded systems and device networks for real-time data in smart environments.",
-                    "SpaceTech: Developing autonomous navigation and drone technologies, with interest in satellite systems.",
+                    /* "SpaceTech: Developing autonomous navigation and drone technologies, with interest in satellite systems.", */
                     "Business: Scaling tech solutions through entrepreneurship and project management."
                   ].map((item, index) => (
                     <li key={index} className="flex items-start">
@@ -348,6 +261,6 @@ export default function About() {
           }
         }
       `}</style>
-    </>
+    </Layout>
   );
 }
