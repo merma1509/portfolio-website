@@ -7,7 +7,7 @@ export default function Home() {
   const [newsletterData, setNewsletterData] = useState({ name: '', email: '' });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter`, {
@@ -120,9 +120,9 @@ export default function Home() {
             <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-slate-800 dark:text-white mb-2 sm:mb-3 md:mb-4 lg:mb-6 leading-tight">
               Tech Entrepreneur,
               <br className="hidden sm:block" />
-              <span className="sm:hidden"> </span>AI Practitioner,
+              <span className="sm:hidden"> </span>Data Practitioner,
               <br className="hidden md:block" />
-              <span className="sm:hidden"> </span>SpaceTech Enthusiast
+              {/* <span className="sm:hidden"> </span>SpaceTech Enthusiast */}
             </h2>
             <p className="text-xs sm:text-sm md:text-base lg:text-lg text-slate-600 dark:text-slate-300 mb-3 sm:mb-4 md:mb-6 lg:mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               <i>Bridging AI, Internet of Things (IoT), autonomous systems, and real-world impact.</i>
@@ -189,7 +189,7 @@ export default function Home() {
                 <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-teal-500 rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
                   <span className="text-white text-xs sm:text-sm md:text-base lg:text-lg">🛒</span>
                 </div>
-                <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold text-slate-800 dark:text-white">eNeza Marketplace</h4>
+                <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold text-slate-800 dark:text-white">eNeza MarketPlace</h4>
               </div>
               <p className="text-teal-700 dark:text-teal-300 font-medium mb-2 italic text-xs sm:text-xs md:text-sm text-center">"Integrated e-commerce platform with AI recommendations and secure logistics for seamless shopping."</p>
               <p className="text-slate-600 dark:text-slate-300 mb-3 sm:mb-4 md:mb-6 text-xs sm:text-sm md:text-base text-justify">Boosts local economies with smart recommendations, secure payments gateways, and efficient supply chains.</p>
