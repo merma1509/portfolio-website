@@ -19,7 +19,8 @@ export default function Skills() {
       items: [
         { name: "Predictive Analytics and Deep Learning", highlight: true },
         { name: "Neural Networks Architecture Design", highlight: true },
-        { name: "Production ML Pipeline Development", highlight: true }
+        /* { name: "Production ML Pipeline Development", highlight: true }, */
+        { name: "ML Security and Privacy", highlight: true }
       ]
     },
     {
@@ -32,11 +33,12 @@ export default function Skills() {
       buttonColor: "bg-blue-600 hover:bg-blue-700",
       items: [
         { name: "IoT Network Architecture", highlight: true },
-        { name: "Real-Time Embedded System Design", highlight: true },
+        /* { name: "Real-Time Embedded System Design", highlight: true }, */
+        { name: "Hardware-Software Integration", highlight: true },
         { name: "Cyber-Physical Security Protocols", highlight: true }
       ]
     },
-    {
+    /* {
       category: "SpaceTech & Drones",
       icon: "🚀",
       gradient: "from-slate-500 via-gray-500 to-slate-600",
@@ -50,6 +52,7 @@ export default function Skills() {
         { name: "Hardware-Software Integration", highlight: true }
       ]
     },
+    */
     {
       category: "Business & Leadership",
       icon: "💼",
@@ -68,7 +71,7 @@ export default function Skills() {
 
   return (
     <Layout currentPage="skills" className="relative overflow-hidden">
-      {/* Main Content - Enhanced Background */}
+      {/* Main Content */}
       <div className="py-6 sm:py-8 lg:py-16 relative z-10">
         {/* Decorative background elements */}
         <div className="absolute inset-0 pointer-events-none">
@@ -175,7 +178,7 @@ export default function Skills() {
                   </p>
                 </div>
 
-                {/* Action Buttons - Enhanced Design */}
+                {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center mb-8 sm:mb-10">
                   <a
                     href="/projects"

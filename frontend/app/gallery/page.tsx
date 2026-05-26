@@ -58,14 +58,14 @@ export default function Gallery() {
       alt: "eNeza e-commerce platform demo",
       icon: "🛒"
     },
-    {
+    /*{
       title: "Drone Prototype",
       description: "Early hardware prototype for autonomous UAV development.",
       type: "image",
       src: "/images/drone-prototype.jpg",
       alt: "Early drone hardware prototype",
       icon: "🚁"
-    },
+    },*/
     {
       title: "University Project",
       description: "Presenting project at university for credibility and knowledge sharing.",
